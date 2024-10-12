@@ -56,11 +56,11 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;*/
-  background: none;      /* Remove background color */
-  border: none;          /* Remove border */
-  outline: none;         /* Remove outline */
-  padding: 0;            /* Remove padding */
-  font-size: 2rem;       /* Increase size of the emoji (adjust as needed) */
+  background: none; /* Remove background color */
+  border: none; /* Remove border */
+  outline: none; /* Remove outline */
+  padding: 0; /* Remove padding */
+  font-size: 2rem; /* Increase size of the emoji (adjust as needed) */
   cursor: pointer;
 }
 button:hover {

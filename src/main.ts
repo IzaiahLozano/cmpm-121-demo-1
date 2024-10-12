@@ -81,7 +81,7 @@ function Game_setup() {
 }
 
 function Count_display() {
-  how_many_pats.textContent = `${Math.floor(head_pat)} head pats for the goodest boy ever`;
+  how_many_pats.textContent = `${Math.floor(head_pat)} head pats for the Goodest Boy Ever`;
   what_lvl.textContent = `${upgrade_level} head pats/sec`;
   BR_lvl.textContent = `${Math.floor(belly_rubs)} bellys rubbed`;
   TY_lvl.textContent = `${Math.floor(chew_toys)} chew toys chewed`;

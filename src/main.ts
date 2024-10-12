@@ -31,7 +31,6 @@ const Belly_btn = document.createElement("button");
 const Toy_btn = document.createElement("button");
 const Treat_btn = document.createElement("button");
 
-
 function Game_setup() {
   //Button Settings
   btn.textContent = "🐶";
@@ -39,7 +38,7 @@ function Game_setup() {
   //Upgrade Belly Button Settings
   Belly_btn.textContent = "👋 Belly Rubs 👋";
   Belly_btn.disabled = true;
- 
+
   //Upgrade Toy Button Settings
   Toy_btn.textContent = "🦠 Chew Toys 🦠";
   Toy_btn.disabled = true;
@@ -47,9 +46,6 @@ function Game_setup() {
   //Upgrade Treats Button Settings
   Treat_btn.textContent = "🦴 Treats 🦴";
   Treat_btn.disabled = true;
-
-
-
 
   //Counter Settings
   how_many_pats.style.marginTop = "20px";
@@ -86,7 +82,7 @@ function Game_setup() {
 
 function Count_display() {
   how_many_pats.textContent = `${Math.floor(head_pat)} head pats for the goodest boy ever`;
-  what_lvl.textContent = `${(upgrade_level)} head pats/sec`;
+  what_lvl.textContent = `${upgrade_level} head pats/sec`;
   BR_lvl.textContent = `${Math.floor(belly_rubs)} bellys rubbed`;
   TY_lvl.textContent = `${Math.floor(chew_toys)} chew toys chewed`;
   TrT_lvl.textContent = `${Math.floor(treats)} treats eaten`;
@@ -143,7 +139,7 @@ function ButtonBehvior() {
   //Upgrade Belly Button
   Belly_btn.addEventListener("click", () => {
     Upgrades(10, Belly_inflation, 0.5, Belly_btn);
-    Belly_inflation *= 1.2;
+    Belly_inflation *= 1.15;
     belly_rubs++;
   });
 
@@ -162,16 +158,20 @@ function ButtonBehvior() {
   });
 }
 
-function Upgrades (cost: number, inflation: number, boost: number, button_type: HTMLButtonElement) {
-  if(Math.floor(head_pat) >= (cost * inflation)) {
-
-    head_pat -= (cost * inflation);
+function Upgrades(
+  cost: number,
+  inflation: number,
+  boost: number,
+  button_type: HTMLButtonElement,
+) {
+  if (Math.floor(head_pat) >= cost * inflation) {
+    head_pat -= cost * inflation;
     upgrade_level += boost;
     //inflation *= inf_rate;
 
     Count_display();
 
-    button_type.disabled = Math.floor(head_pat) >= (cost * inflation);
+    button_type.disabled = Math.floor(head_pat) >= cost * inflation;
   }
 }
 

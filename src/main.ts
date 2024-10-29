@@ -9,6 +9,9 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
+let totalPats: number = 0;
+let PatsPerSec: number = 0;
+
 interface Item {
   upg_name: string;
   cost: number;
@@ -74,51 +77,53 @@ const multipliers: Item[] = [
   },
 ];
 
-let head_pat: number = 0;
-let pats_per_sec: number = 0;
-
 const how_many_pats = document.createElement("div");
 const what_lvl = document.createElement("div");
-const BR_lvl = document.createElement("div");
-const TY_lvl = document.createElement("div");
-const TrT_lvl = document.createElement("div");
-const CtH_lvl = document.createElement("div");
-const WlK_lvl = document.createElement("div");
+const BellyRub_lvl = document.createElement("div");
+const Toy_lvl = document.createElement("div");
+const Treat_lvl = document.createElement("div");
+const Catch_lvl = document.createElement("div");
+const Walk_lvl = document.createElement("div");
 const btn_shell = document.createElement("div");
 
-function Game_setup() {
+function GameUI_Setup() {
+
+  const DisplayTextSize = "18px";
+  const BtnTextSize = "10px"
+  const MarginTopDifference = "20px"
+
   //Counter Settings
-  how_many_pats.style.marginTop = "20px";
-  how_many_pats.style.fontSize = "18px";
+  how_many_pats.style.marginTop = MarginTopDifference;
+  how_many_pats.style.fontSize = DisplayTextSize;
 
   //Upgrade level Settings
-  what_lvl.style.marginTop = "20px";
-  what_lvl.style.fontSize = "18px";
+  what_lvl.style.marginTop = MarginTopDifference;
+  what_lvl.style.fontSize = DisplayTextSize;
 
   //toy level Settings
-  TY_lvl.style.marginTop = "20px";
-  TY_lvl.style.fontSize = "10px";
+  Toy_lvl.style.marginTop = MarginTopDifference;
+  Toy_lvl.style.fontSize = BtnTextSize;
 
   //Belly level Settings
-  BR_lvl.style.marginTop = "20px";
-  BR_lvl.style.fontSize = "10px";
+  BellyRub_lvl.style.marginTop = MarginTopDifference;
+  BellyRub_lvl.style.fontSize = BtnTextSize;
 
   //Treat Level Settings
-  TrT_lvl.style.marginTop = "20px";
-  TrT_lvl.style.fontSize = "10px";
+  Treat_lvl.style.marginTop = MarginTopDifference;
+  Treat_lvl.style.fontSize = BtnTextSize;
 
   //Catch Level Settings
-  CtH_lvl.style.marginTop = "20px";
-  CtH_lvl.style.fontSize = "10px";
+  Catch_lvl.style.marginTop = MarginTopDifference;
+  Catch_lvl.style.fontSize = BtnTextSize;
 
   //Walk Level Settings
-  WlK_lvl.style.marginTop = "20px";
-  WlK_lvl.style.fontSize = "10px";
+  Walk_lvl.style.marginTop = MarginTopDifference;
+  Walk_lvl.style.fontSize = BtnTextSize;
 
   //Hover Message Settings
   const descriptionDisplay = document.createElement("div");
-  descriptionDisplay.style.marginTop = "20px";
-  descriptionDisplay.style.fontSize = "14px";
+  descriptionDisplay.style.marginTop = MarginTopDifference;
+  descriptionDisplay.style.fontSize = DisplayTextSize;
   document.body.appendChild(descriptionDisplay);
 
 
@@ -129,14 +134,14 @@ function Game_setup() {
 
   //Main Button Behavior
   Pat_btn.addEventListener("click", () => {
-    head_pat++;
-    Count_display();
+    totalPats++;
+    UpdatePatDisplay();
   });
 
   //Upgrade Button Factory:
   multipliers.forEach((item) => {
     const btn_type = document.createElement("button");
-    btn_type.textContent = `${item.upg_name}`;
+    btn_type.textContent = `${item.upg_name} - Cost: ${Math.floor(item.cost * item.inflation)}`;
     btn_type.classList.add("upgrade-button", "tooltip");
     btn_type.disabled = true;
     btn_shell.appendChild(btn_type);
@@ -154,53 +159,83 @@ function Game_setup() {
     btn_type.appendChild(tooltip);
     tooltip.appendChild(tooltipText);
 
-    //Behavior
+    //Main Button Behavior
     btn_type.addEventListener("click", () => {
       Upgrades(item);
     });
   });
 
-  Count_display(); //Inital value -> 0
+  UpdatePatDisplay(); //Inital value -> 0
 
   document.body.appendChild(Pat_btn);
   document.body.appendChild(how_many_pats);
   document.body.appendChild(what_lvl);
   document.body.appendChild(btn_shell);
-  document.body.appendChild(BR_lvl);
-  document.body.appendChild(TY_lvl);
-  document.body.appendChild(TrT_lvl);
-  document.body.appendChild(CtH_lvl);
-  document.body.appendChild(WlK_lvl);
+  document.body.appendChild(BellyRub_lvl);
+  document.body.appendChild(Toy_lvl);
+  document.body.appendChild(Treat_lvl);
+  document.body.appendChild(Catch_lvl);
+  document.body.appendChild(Walk_lvl);
 
   // Initialize messages for purchase counts
-  BR_lvl.textContent = "0 belly rubs given";
-  TY_lvl.textContent = "0 chew toys chewed";
-  TrT_lvl.textContent = "0 treats eaten";
-  CtH_lvl.textContent = "0 games of catch played";
-  WlK_lvl.textContent = "0 walks around town";
+  BellyRub_lvl.textContent = "0 belly rubs given";
+  Toy_lvl.textContent = "0 chew toys chewed";
+  Treat_lvl.textContent = "0 treats eaten";
+  Catch_lvl.textContent = "0 games of catch played";
+  Walk_lvl.textContent = "0 walks around town";
 }
 
-function Count_display() {
-  how_many_pats.textContent = `${Math.floor(head_pat)} head pats for the Goodest Boy Ever`;
-  what_lvl.textContent = `${pats_per_sec} head pats/sec`;
+function UpdatePatDisplay() {
+  how_many_pats.textContent = `${Math.floor(totalPats)} head pats for the Goodest Boy Ever`;
+  what_lvl.textContent = `${PatsPerSec} head pats/sec`;
 }
 
-function Count_Behavior() {
+function Upgrades(item: Item) {
+  if (totalPats >= item.cost * item.inflation) {
+    totalPats -= item.cost * item.inflation;
+    PatsPerSec += item.boost;
+
+    item.inflation *= item.inf_rate;
+    item.purchases++;
+
+    UpdatePatDisplay();
+
+    // Update messages for purchase counts
+    if (item.upg_name === "👋 Belly Rubs 👋") {
+      BellyRub_lvl.textContent = `${item.purchases} belly rubs given`;
+    } else if (item.upg_name === "🦠 Chew Toys 🦠") {
+      Toy_lvl.textContent = `${item.purchases} chew toys chewed`;
+    } else if (item.upg_name === "🦴 Treats 🦴") {
+      Treat_lvl.textContent = `${item.purchases} treats eaten`;
+    } else if (item.upg_name === "🥏 Play Catch 🥏") {
+      Catch_lvl.textContent = `${item.purchases} games of catch played`;
+    } else if (item.upg_name === "🚶🏽‍♂️ Go for a Walk 🚶🏽‍♂️") {
+      Walk_lvl.textContent = `${item.purchases} walks around town`;
+    }
+
+    // Update button text with new inflated cost
+    item.button!.textContent = `${item.upg_name} - Cost: ${Math.floor(item.cost * item.inflation)}`;
+
+    item.disabled = Math.floor(totalPats) >= item.cost * item.inflation;
+  }
+}
+
+function PatCount_Behavior() {
   let start = 0;
 
-  function updateCounter(timestamp: number) {
+  function Update_Count(timestamp: number) {
     if (start === undefined) {
       start = timestamp;
     }
 
     const time_passed = timestamp - start;
-    const increase = (time_passed / 1000) * pats_per_sec;
+    const increase = (time_passed / 1000) * PatsPerSec;
 
-    head_pat += increase;
-    Count_display();
+    totalPats += increase;
+    UpdatePatDisplay();
 
     multipliers.forEach((item) => {
-      if (Math.floor(head_pat) >= item.cost * item.inflation) {
+      if (Math.floor(totalPats) >= item.cost * item.inflation) {
         item.button!.disabled = false;
       } else {
         item.button!.disabled = true;
@@ -209,39 +244,12 @@ function Count_Behavior() {
 
     start = timestamp;
 
-    requestAnimationFrame(updateCounter);
+    requestAnimationFrame(Update_Count);
   }
 
   //Frame increments
-  requestAnimationFrame(updateCounter);
+  requestAnimationFrame(Update_Count);
 }
 
-function Upgrades(item: Item) {
-  if (head_pat >= item.cost * item.inflation) {
-    head_pat -= item.cost * item.inflation;
-    pats_per_sec += item.boost;
-
-    item.inflation *= item.inf_rate;
-    item.purchases++;
-
-    Count_display();
-
-    // Update messages for purchase counts
-    if (item.upg_name === "👋 Belly Rubs 👋") {
-      BR_lvl.textContent = `${item.purchases} belly rubs given`;
-    } else if (item.upg_name === "🦠 Chew Toys 🦠") {
-      TY_lvl.textContent = `${item.purchases} chew toys chewed`;
-    } else if (item.upg_name === "🦴 Treats 🦴") {
-      TrT_lvl.textContent = `${item.purchases} treats eaten`;
-    } else if (item.upg_name === "🥏 Play Catch 🥏") {
-      CtH_lvl.textContent = `${item.purchases} games of catch played`;
-    } else if (item.upg_name === "🚶🏽‍♂️ Go for a Walk 🚶🏽‍♂️") {
-      WlK_lvl.textContent = `${item.purchases} walks around town`;
-    }
-
-    item.disabled = Math.floor(head_pat) >= item.cost * item.inflation;
-  }
-}
-
-document.addEventListener("DOMContentLoaded", Game_setup);
-document.addEventListener("DOMContentLoaded", Count_Behavior);
+document.addEventListener("DOMContentLoaded", GameUI_Setup);
+document.addEventListener("DOMContentLoaded", PatCount_Behavior);

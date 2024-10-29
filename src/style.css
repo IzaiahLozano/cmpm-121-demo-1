@@ -28,10 +28,12 @@ body {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
-  /*place-items: center;*/
   min-width: 320px;
   min-height: 100vh;
   flex-direction: column;
+  background: linear-gradient(to bottom, #f5d2bf, #ff9bff);
+  color: rgba(23, 4, 59, 0.87);
+  /* Background Color inspired by this project: https://scso-ucsc.github.io/Incremental-Game-Development/ */
 }
 
 h1 {
@@ -64,8 +66,16 @@ h1 {
   border-radius: 8px; /* Rounded corners */
   background-color: #2b2b2b; /* Slightly different color for contrast */
   color: white; /* Change text color for visibility */
+
+  opacity: 1; /* These two lines were inspired by this project: https://ishachury20.github.io/cmpm-121-demo-1/ */
+  transition: opacity 0.3s ease; 
 }
 /*Button code ^ provided by ChatGPT*/
+
+button:disabled {
+  opacity: 0.5; 
+  cursor: not-allowed; 
+}
 
 button:hover {
   border-color: #646cff;
